@@ -1,0 +1,16 @@
+---
+- name: Setup Cluster Nodes
+  hosts: all
+  roles:
+    - { role: 'node-setup', become: yes, tags: node }
+
+- name: Setup Master Node
+  hosts: masters
+  roles:
+    - { role: 'master-setup', become: yes, tags: master }
+
+- name: Initialize Cluster Resources
+  hosts: masters
+  roles:
+    - { role: 'initialize-cluster', become: yes, tags: init }    
+        

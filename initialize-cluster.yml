@@ -1,0 +1,5 @@
+---
+- name: Setup PostreSQL
+  hosts: masters
+  roles:
+    - { role: 'postgres-setup', become: yes, tags: postgres }

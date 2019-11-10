@@ -1,0 +1,9 @@
+---
+- name: Kubernetes setup
+  include: kubernetes-setup.yml
+  
+- name: NFS server setup
+  include: nfs-setup.yml
+
+- name: Docker registry setup
+  include: docker-registry-setup.yml  

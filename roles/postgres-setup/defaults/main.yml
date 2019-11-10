@@ -1,0 +1,7 @@
+---
+postgres_yamls_root: $HOME/kube-yamls/postgresql
+postgres_storage_size_gb: 10
+postgres_version: 11.5
+postgres_db: psql_db
+postgres_user: root
+postgres_password: 12345678

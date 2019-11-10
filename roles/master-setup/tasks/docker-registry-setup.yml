@@ -1,0 +1,10 @@
+---
+- name: create registry data directory
+  file:
+    path: /srv/docker/registry
+    state: directory
+    mode: 0666
+
+- name: create registry container
+  shell: docker run -d --name registry -p 5000:5000 --restart=always -v /srv/docker/registry:/var/lib/registry registry:2
+  ignore_errors: yes

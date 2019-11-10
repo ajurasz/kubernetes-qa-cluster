@@ -1,0 +1,20 @@
+---
+- name: start nfs-server
+  service:
+    name: nfs-server
+    enabled: yes
+    state: started
+
+- name: create nfs directory
+  file:
+    path: /srv/nfs/kubedata
+    state: directory
+    mode: 0666
+
+- name: add nfs directory to nfs export
+  lineinfile:
+    path: /etc/exports
+    line: "/srv/nfs/kubedata {{ kubernetes_network }}(rw,sync,no_subtree_check)"
+
+- name: refresh nfs exports
+  shell: exportfs -a 

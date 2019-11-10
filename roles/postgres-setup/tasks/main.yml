@@ -1,0 +1,18 @@
+---
+- name: create objects directory
+  file:
+    path: "{{ postgres_yamls_root }}"
+    state: directory
+    mode: 0755    
+
+- name: copy objects
+  template:
+    src: postgres.yaml.j2
+    dest: "{{ postgres_yamls_root }}/postgres.yaml"
+
+- name: create postgres
+  shell: "kubectl apply -f {{ postgres_yamls_root }}/postgres.yaml >> postgre_setup.txt"
+  args:
+    chdir: $HOME
+    creates: postgre_setup.txt
+ 
