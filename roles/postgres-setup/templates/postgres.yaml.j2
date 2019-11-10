@@ -23,7 +23,7 @@ spec:
     - ReadWriteMany
   nfs:
     server: {{ hostvars['master'].ansible_host }}
-    path: "/srv/nfs/kubedata"
+    path: "/srv/nfs/kubedata/postgres"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

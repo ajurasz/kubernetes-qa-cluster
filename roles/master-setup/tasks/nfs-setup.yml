@@ -14,7 +14,7 @@
 - name: add nfs directory to nfs export
   lineinfile:
     path: /etc/exports
-    line: "/srv/nfs/kubedata {{ kubernetes_network }}(rw,sync,no_subtree_check)"
+    line: "/srv/nfs/kubedata {{ kubernetes_network }}(rw,sync,no_subtree_check,no_root_squash)"
 
 - name: refresh nfs exports
   shell: exportfs -a 

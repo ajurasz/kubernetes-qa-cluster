@@ -1,4 +1,10 @@
 ---
+- name: create nfs directory for postgres data
+  file:
+    path: /srv/nfs/kubedata/postgres
+    state: directory
+    mode: 0666
+
 - name: create objects directory
   file:
     path: "{{ postgres_yamls_root }}"
