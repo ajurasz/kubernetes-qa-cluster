@@ -2,14 +2,17 @@ apiVersion: v1
 kind: Namespace
 metadata:
    name: postgres
+   labels:
+     type: storage
 ---   
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-config
+  name: postgres
   namespace: postgres
   labels:
     app: postgres
+    type: storage
 data:
   POSTGRES_DB: "{{ postgres_db }}"
   POSTGRES_USER: "{{ postgres_user }}"
@@ -18,9 +21,10 @@ data:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-pv
+  name: postgres
   labels:
     app: postgres
+    type: storage
 spec:
   storageClassName: manual
   capacity:
@@ -34,13 +38,14 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-pvc
+  name: postgres
   namespace: postgres
   labels:
-    app: postgres  
+    app: postgres
+    type: storage
 spec:
   storageClassName: manual
-  volumeName: postgres-pv
+  volumeName: postgres
   accessModes:
     - ReadWriteMany
   resources:
@@ -50,10 +55,11 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-deployment
+  name: postgres
   namespace: postgres
   labels:
     app: postgres
+    type: storage
 spec:
   replicas: 1
   selector:
@@ -63,6 +69,7 @@ spec:
     metadata:
       labels:
         app: postgres
+        type: storage
     spec:
       containers:
         - name: postgres
@@ -72,10 +79,10 @@ spec:
             - containerPort: 5432
           envFrom:
             - configMapRef:
-                name: postgres-config
+                name: postgres
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: postgredb
+              name: postgres_data
           resources:
             limits:
               cpu: "1"
@@ -84,9 +91,9 @@ spec:
               cpu: 500m
               memory: 256Mi          
       volumes:
-        - name: postgredb
+        - name: postgres_data
           persistentVolumeClaim:
-            claimName: postgres-pvc
+            claimName: postgres
 ---
 apiVersion: v1
 kind: Service
@@ -95,6 +102,7 @@ metadata:
   namespace: postgres
   labels:
     app: postgres
+    type: storage
 spec:
   type: NodePort
   ports:
