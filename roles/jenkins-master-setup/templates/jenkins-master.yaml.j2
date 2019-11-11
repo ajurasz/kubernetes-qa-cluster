@@ -19,7 +19,7 @@ spec:
   capacity:
     storage: "{{ jenkins_storage_size_gb }}Gi"
   accessModes:
-    - ReadWriteMany  
+    - ReadWriteOnce
   nfs:
     server: {{ hostvars['master'].ansible_host }}
     path: "/srv/nfs/kubedata/jenkins-master"
@@ -37,7 +37,7 @@ spec:
   storageClassName: manual
   volumeName: jenkins-master
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: "{{ jenkins_storage_size_gb }}Gi"
