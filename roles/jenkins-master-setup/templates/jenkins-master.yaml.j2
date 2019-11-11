@@ -2,13 +2,15 @@ apiVersion: v1
 kind: Namespace
 metadata:
    name: jenkins
+   type: ci
 ---   
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: jenkins-pv
+  name: jenkins
   labels:
     app: jenkins
+    type: ci
 spec:
   storageClassName: manual
   capacity:
@@ -22,13 +24,14 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jenkins-pvc
+  name: jenkins
   namespace: jenkins
   labels:
-    app: jenkins  
+    app: jenkins
+    type: ci
 spec:
   storageClassName: manual
-  volumeName: jenkins-pv
+  volumeName: jenkins
   accessModes:
     - ReadWriteMany
   resources:
@@ -38,10 +41,11 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jenkins-deployment
+  name: jenkins
   namespace: jenkins
   labels:
     app: jenkins
+    type: ci
 spec:
   replicas: 1
   selector:
@@ -51,6 +55,7 @@ spec:
     metadata:
       labels:
         app: jenkins
+        type: ci
     spec:
       securityContext:
         runAsUser: 0
@@ -75,7 +80,7 @@ spec:
       volumes:
         - name: jenkins-home
           persistentVolumeClaim:
-            claimName: jenkins-pvc
+            claimName: jenkins
 ---
 apiVersion: v1
 kind: Service
@@ -84,6 +89,7 @@ metadata:
   namespace: jenkins
   labels:
     app: jenkins
+    type: ci
 spec:
   type: NodePort
   ports:
