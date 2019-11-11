@@ -16,7 +16,7 @@
     src: jenkins-master.yaml.j2
     dest: "{{ jenkins_yamls_root }}/jenkins-master.yaml"
 
-- name: create jenkins
+- name: create master
   shell: "kubectl apply -f {{ jenkins_yamls_root }}/jenkins-master.yaml >> jenkins_master_setup.txt"
   args:
     chdir: $HOME
