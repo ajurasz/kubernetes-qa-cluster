@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: jenkins
+---   
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-pv
+  labels:
+    app: jenkins
+spec:
+  storageClassName: manual
+  capacity:
+    storage: "{{ jenkins_storage_size_gb }}Gi"
+  accessModes:
+    - ReadWriteMany  
+  nfs:
+    server: {{ hostvars['master'].ansible_host }}
+    path: "/srv/nfs/kubedata/jenkins-master"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-pvc
+  namespace: jenkins
+  labels:
+    app: jenkins  
+spec:
+  storageClassName: manual
+  volumeName: jenkins-pv
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: "{{ jenkins_storage_size_gb }}Gi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  namespace: jenkins
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 1000    
+      containers:
+        - name: jenkins
+          image: "jenkins/jenkins:{{ jenkins_version }}"
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 8080
+            - containerPort: 50000
+          volumeMounts:
+            - mountPath: /var/jenkins_home
+              name: jenkins-home
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 512Mi                         
+      volumes:
+        - name: jenkins-home
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+  namespace: jenkins
+  labels:
+    app: jenkins
+spec:
+  type: NodePort
+  ports:
+   - port: 8080
+     nodePort: 30001
+  selector:
+   app: jenkins

@@ -1,0 +1,4 @@
+---
+jenkins_yamls_root: $HOME/kube-yamls/jenkins
+jenkins_storage_size_gb: 5
+jenkins_version: 2.204-alpine

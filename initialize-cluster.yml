@@ -3,3 +3,8 @@
   hosts: masters
   roles:
     - { role: 'postgres-setup', become: yes, tags: postgres }
+
+- name: Setup Jenkins Master
+  hosts: masters
+  roles:
+    - { role: 'jenkins-master-setup', become: yes, tags: ['jenkins', 'jenkins-master'] }

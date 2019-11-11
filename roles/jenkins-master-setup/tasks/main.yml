@@ -1,0 +1,24 @@
+---
+- name: create nfs directory for jenkins data
+  file:
+    path: /srv/nfs/kubedata/jenkins-master
+    state: directory
+    mode: 0666
+
+- name: create objects directory
+  file:
+    path: "{{ jenkins_yamls_root }}"
+    state: directory
+    mode: 0755    
+
+- name: copy objects
+  template:
+    src: jenkins-master.yaml.j2
+    dest: "{{ jenkins_yamls_root }}/jenkins-master.yaml"
+
+- name: create jenkins
+  shell: "kubectl apply -f {{ jenkins_yamls_root }}/jenkins-master.yaml >> jenkins_master_setup.txt"
+  args:
+    chdir: $HOME
+    creates: jenkins_master_setup.txt
+ 
