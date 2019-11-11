@@ -17,8 +17,8 @@
     dest: "{{ postgres_yamls_root }}/postgres.yaml"
 
 - name: create postgres
-  shell: "kubectl apply -f {{ postgres_yamls_root }}/postgres.yaml >> postgre_setup.txt"
+  shell: "kubectl apply -f {{ postgres_yamls_root }}/postgres.yaml >> postgres_setup.txt"
   args:
     chdir: $HOME
-    creates: postgre_setup.txt
+    creates: postgres_setup.txt
  
