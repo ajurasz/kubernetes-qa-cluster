@@ -7,10 +7,5 @@
 - name: Setup Master Node
   hosts: masters
   roles:
-    - { role: 'master-setup', become: yes, tags: master }
-
-- name: Initialize Cluster Resources
-  hosts: masters
-  roles:
-    - { role: 'initialize-cluster', become: yes, tags: init }    
+    - { role: 'master-setup', become: yes, tags: master } 
         
