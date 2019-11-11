@@ -11,6 +11,17 @@
     state: directory
     mode: 0755    
 
+- name: copy jenkins-ns.yaml
+  copy:
+    src: jenkins-ns-yaml
+    dest: "{{ jenkins_yamls_root }}/jenkins-ns.yaml"
+
+- name: create jenkins namespace
+  shell: kubectl apply -f {{ jenkins_yamls_root }}/jenkins-ns.yaml >> jenkins_ns.txt
+  args:
+    chdir: $HOME
+    creates: jenkins_ns.txt
+
 - name: copy objects
   template:
     src: jenkins-master.yaml.j2
