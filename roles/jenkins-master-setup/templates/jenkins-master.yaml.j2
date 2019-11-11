@@ -9,9 +9,9 @@ metadata:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: jenkins
+  name: jenkins-master
   labels:
-    app: jenkins
+    app: jenkins-master
     type: ci
     env: global
 spec:
@@ -27,15 +27,15 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jenkins
+  name: jenkins-master
   namespace: jenkins
   labels:
-    app: jenkins
+    app: jenkins-master
     type: ci
     env: global
 spec:
   storageClassName: manual
-  volumeName: jenkins
+  volumeName: jenkins-master
   accessModes:
     - ReadWriteMany
   resources:
@@ -45,21 +45,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jenkins
+  name: jenkins-master
   namespace: jenkins
   labels:
-    app: jenkins
+    app: jenkins-master
     type: ci
     env: global
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: jenkins
+      app: jenkins-master
   template:
     metadata:
       labels:
-        app: jenkins
+        app: jenkins-master
         type: ci
         env: global
     spec:
@@ -67,7 +67,7 @@ spec:
         runAsUser: 0
         fsGroup: 1000    
       containers:
-        - name: jenkins
+        - name: jenkins-master
           image: "jenkins/jenkins:{{ jenkins_version }}"
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -86,15 +86,15 @@ spec:
       volumes:
         - name: jenkins-home
           persistentVolumeClaim:
-            claimName: jenkins
+            claimName: jenkins-master
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: jenkins
+  name: jenkins-master
   namespace: jenkins
   labels:
-    app: jenkins
+    app: jenkins-master
     type: ci
     env: global
 spec:
@@ -103,4 +103,4 @@ spec:
    - port: 8080
      nodePort: 30001
   selector:
-   app: jenkins
+   app: jenkins-master
