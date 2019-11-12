@@ -13,7 +13,7 @@
 
 - name: copy jenkins-ns.yaml
   copy:
-    src: jenkins-ns-yaml
+    src: jenkins-ns.yaml
     dest: "{{ jenkins_yamls_root }}/jenkins-ns.yaml"
 
 - name: create jenkins namespace
