@@ -74,7 +74,10 @@ spec:
               memory: 2Gi
             requests:
               cpu: 500m
-              memory: 512Mi                         
+              memory: 512Mi
+          env:
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx2g"                          
       volumes:
         - name: jenkins-home
           persistentVolumeClaim:
