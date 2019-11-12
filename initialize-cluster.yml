@@ -8,8 +8,3 @@
   hosts: masters
   roles:
     - { role: 'jenkins-master-setup', become: yes, tags: ['jenkins', 'jenkins-master'] }
-
-- name: Setup Jenkins Slave
-  hosts: masters
-  roles:
-    - { role: 'jenkins-slave-setup', become: yes, tags: ['jenkins', 'jenkins-slave'] }
