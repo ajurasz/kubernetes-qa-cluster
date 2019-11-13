@@ -1,9 +1,15 @@
 ---
-- name: create nfs directory for jenkins data
+- name: create nfs directory for jenkins master data
   file:
     path: /srv/nfs/kubedata/jenkins-master
     state: directory
     mode: 0666
+
+- name: create nfs directory for jenkins agent data
+  file:
+    path: /srv/nfs/kubedata/jenkins-agent
+    state: directory
+    mode: 0666    
 
 - name: create objects directory
   file:

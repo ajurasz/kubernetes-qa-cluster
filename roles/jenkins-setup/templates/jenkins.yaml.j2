@@ -41,16 +41,32 @@ metadata:
   labels:
     app: jenkins
     type: ci
-    env: global
 spec:
   storageClassName: manual
   capacity:
-    storage: "{{ jenkins_storage_size_gb }}Gi"
+    storage: "{{ jenkins_master_storage_size_gb }}Gi"
   accessModes:
     - ReadWriteOnce
   nfs:
     server: {{ hostvars['master'].ansible_host }}
     path: "/srv/nfs/kubedata/jenkins-master"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-agent
+  labels:
+    app: jenkins
+    type: ci
+spec:
+  storageClassName: manual
+  capacity:
+    storage: "{{ jenkins_agent_storage_size_gb }}Gi"
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ hostvars['master'].ansible_host }}
+    path: "/srv/nfs/kubedata/jenkins-agent"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -59,7 +75,6 @@ metadata:
   labels:
     app: jenkins
     type: ci
-    env: global
 spec:
   storageClassName: manual
   volumeName: jenkins
@@ -67,7 +82,23 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: "{{ jenkins_storage_size_gb }}Gi"
+      storage: "{{ jenkins_master_storage_size_gb }}Gi"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-agent
+  labels:
+    app: jenkins
+    type: ci
+spec:
+  storageClassName: manual
+  volumeName: jenkins-agent
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: "{{ jenkins_agent_storage_size_gb }}Gi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -76,7 +107,6 @@ metadata:
   labels:
     app: jenkins
     type: ci
-    env: global
 spec:
   replicas: 1
   selector:
@@ -87,7 +117,6 @@ spec:
       labels:
         app: jenkins
         type: ci
-        env: global
     spec:
       securityContext:
         runAsUser: 0
@@ -95,7 +124,7 @@ spec:
       serviceAccountName: jenkins   
       containers:
         - name: jenkins
-          image: "jenkins/jenkins:{{ jenkins_version }}"
+          image: "jenkins/jenkins:{{ jenkins_master_version }}"
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 8080
@@ -125,7 +154,6 @@ metadata:
   labels:
     app: jenkins
     type: ci
-    env: global
 spec:
   type: NodePort
   ports:
@@ -133,3 +161,17 @@ spec:
      nodePort: 30001
   selector:
    app: jenkins
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-agent
+  labels:
+    app: jenkins
+    type: ci
+spec:
+  ports:
+   - port: 50000
+     targetPort: 50000
+  selector:
+   app: jenkins   
