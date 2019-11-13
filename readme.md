@@ -1,3 +1,10 @@
+## Provision Centos7 VMs
+
+```
+cd vagrant
+vagrant up
+```
+
 ## Create Kubernetes cluster
 
 ```
