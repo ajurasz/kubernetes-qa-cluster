@@ -2,13 +2,11 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: jenkins
-  namespace: jenkins
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: jenkins
-  namespace: jenkins
 rules:
 - apiGroups: [""]
   resources: ["pods"]
@@ -28,7 +26,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: jenkins
-  namespace: jenkins
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -40,9 +37,9 @@ subjects:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: jenkins-master
+  name: jenkins
   labels:
-    app: jenkins-master
+    app: jenkins
     type: ci
     env: global
 spec:
@@ -58,15 +55,14 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jenkins-master
-  namespace: jenkins
+  name: jenkins
   labels:
-    app: jenkins-master
+    app: jenkins
     type: ci
     env: global
 spec:
   storageClassName: manual
-  volumeName: jenkins-master
+  volumeName: jenkins
   accessModes:
     - ReadWriteOnce
   resources:
@@ -76,21 +72,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jenkins-master
-  namespace: jenkins
+  name: jenkins
   labels:
-    app: jenkins-master
+    app: jenkins
     type: ci
     env: global
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: jenkins-master
+      app: jenkins
   template:
     metadata:
       labels:
-        app: jenkins-master
+        app: jenkins
         type: ci
         env: global
     spec:
@@ -98,7 +93,7 @@ spec:
         runAsUser: 0
         fsGroup: 1000    
       containers:
-        - name: jenkins-master
+        - name: jenkins
           image: "jenkins/jenkins:{{ jenkins_version }}"
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -120,15 +115,14 @@ spec:
       volumes:
         - name: jenkins-home
           persistentVolumeClaim:
-            claimName: jenkins-master
+            claimName: jenkins
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: jenkins-master
-  namespace: jenkins
+  name: jenkins
   labels:
-    app: jenkins-master
+    app: jenkins
     type: ci
     env: global
 spec:
@@ -137,4 +131,4 @@ spec:
    - port: 8080
      nodePort: 30001
   selector:
-   app: jenkins-master
+   app: jenkins

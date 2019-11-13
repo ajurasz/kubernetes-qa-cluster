@@ -4,7 +4,7 @@
   roles:
     - { role: 'postgres-setup', become: yes, tags: postgres }
 
-- name: Setup Jenkins Master
+- name: Setup Jenkins
   hosts: masters
   roles:
-    - { role: 'jenkins-master-setup', become: yes, tags: ['jenkins', 'jenkins-master'] }
+    - { role: 'jenkins-setup', become: yes, tags: jenkins }
