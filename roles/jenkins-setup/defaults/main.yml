@@ -1,5 +1,5 @@
 ---
 jenkins_yamls_root: $HOME/kube-yamls/jenkins
 jenkins_master_storage_size_gb: 5
-jenkins_master_version: 2.204-alpine
+jenkins_master_version: 2.205-alpine
 jenkins_agent_storage_size_gb: 10
